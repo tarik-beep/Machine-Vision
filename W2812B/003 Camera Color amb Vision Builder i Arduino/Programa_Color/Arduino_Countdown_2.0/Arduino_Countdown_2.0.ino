@@ -1,12 +1,12 @@
 #include <FastLED.h>
 
 #define LED_PIN     3   // Pin on està conectat el DIN de la matriu
-#define MATRIX_WIDTH  16 // LED's d'amplada de la matriu
-#define MATRIX_HEIGHT 16 // LED's d'altura de la matriu
-#define NUM_LEDS (MATRIX_WIDTH * MATRIX_HEIGHT) // Numero total de LED's
-#define BRIGHTNESS 64 // Briantor de la matriu 
+#define MATRIX_WIDTH  16
+#define MATRIX_HEIGHT 16
+#define NUM_LEDS (MATRIX_WIDTH * MATRIX_HEIGHT)
+#define BRIGHTNESS 64
 
-CRGB leds[NUM_LEDS];//Crea un array on cada element és un LED RGB que pots controlar.
+CRGB leds[NUM_LEDS];
 
 // Mapeig de la matriu (dependrà de la connexió)
 #define XY(x, y) ((y) * MATRIX_WIDTH + (x))
@@ -86,104 +86,106 @@ const CRGB numero3[16][16] = {
 { BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK}
 };
 
+const CRGB emojiblank[16][16];
+// Arduino server for Color LEGO_Arduino.vbai 
 
-const byte numChars = 255;                                 // Aqui li indiquem quantes dades te que rebre
-char receivedChars[numChars];                              // array on guarda totes aquestes dades
+const byte numChars = 255;
+char receivedChars[numChars];   // an array to store the received data
 
-boolean newData = false;                                   // Iniciem la variable newData com a false
-boolean newColor = false;                                  // Iniciem la variable newColor com a false
+boolean newData = false;
+boolean newColor = false;
 byte ColorPantalla[3] = {100,255,0};
 
 void setup() {
-    Serial.begin(9600);          
-    FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS); // Iniciar comunicació amb la pantalla
-    FastLED.setBrightness( BRIGHTNESS );                   // Assignar al brillantor de la pantalla
-    drawEmoji();                                           // Funció que pinta la pantalla en blanc quan resetejem  
-    FastLED.show();                                        // Eina de la llibreria que mostra a la pantalla
-    pinMode(8,INPUT_PULLUP);                               // Definim el pin 8 com a entrada (Polsador)
+    Serial.begin(9600);
+    FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+    FastLED.setBrightness( BRIGHTNESS );
+    drawEmoji();
+    FastLED.show();
+    pinMode(8,INPUT_PULLUP);
 }
 
 void loop() {
-  if(digitalRead(8)==LOW){                                 // Quan es prem el botó
-     countdown();                                          // Funció compte enrere
-     drawBlack();                                          // Funció pantalla negre
-     delay(500);                                           // Delay de mig segon
-     Serial.write('S');                                    // Envia per la comunicació serial una ('s')
-     delay(500);                                           // Delay de mig segon
+  if(digitalRead(8)==LOW){
+     countdown();
+     drawBlack();
+     delay(500);
+     Serial.write('S');
+     delay(500);
   }
-  recvWithEndMarker();                                     // Funció que rep les dades per el port serial 
-  if (newData == true){                                    // Mirem si rebem noves dades
-    FastLED.show();                                        // Les enviem a la pantalla
-    newData = false;                                       // Resetejem la variable
-    newColor = false;                                      // Resetejem la variable
+  recvWithEndMarker();
+  if (newData == true){
+    FastLED.show();
+    newData = false;
+    newColor = false; 
   }   
 }
 
 // ********************* Funcions
 
-void drawEmoji() {                                         // Funció Per pintar la pantalla de blanc
-    for (int y = 0; y < MATRIX_HEIGHT; y++) {              // Aqui li indiquem totes les columnes verticals
-        for (int x = 0; x < MATRIX_WIDTH; x++) {           // Aqui li indiquem totes les columnes horitzontals
-            leds[XY(x, y)] = WHITE;                        // Aqui li diem el color que volem pintar
+void drawEmoji() {
+    for (int y = 0; y < MATRIX_HEIGHT; y++) {
+        for (int x = 0; x < MATRIX_WIDTH; x++) {
+            leds[XY(x, y)] = WHITE;//emojiblank[y][x];
         }
     }
 }
 
-void drawBlack() {                                         // Funció Per pintar la pantalla de negre
-    for (int y = 0; y < MATRIX_HEIGHT; y++) {              // Aqui li indiquem totes les columnes verticals
-        for (int x = 0; x < MATRIX_WIDTH; x++) {           // Aqui li indiquem totes les columnes horitzontals
-            leds[XY(x, y)] = BLACK;                        // Aqui li diem el color que volem pintar
+void drawBlack() {
+    for (int y = 0; y < MATRIX_HEIGHT; y++) {
+        for (int x = 0; x < MATRIX_WIDTH; x++) {
+            leds[XY(x, y)] = BLACK;//emojiblank[y][x];
         }
     }
 }
 
-void countdown() {                                         
-  const CRGB* countdown[3] = { &numero3[0][0], &numero2[0][0], &numero1[0][0] }; // & = dóna’m la seva adreça de memòria
+void countdown() {
+  const CRGB* countdown[3] = { &numero3[0][0], &numero2[0][0], &numero1[0][0] };
 
-  for (int i = 0; i < 3; i++) {                                   // Variable i per recórrer els elements dins de l'array
-    for (int y = 0; y < MATRIX_HEIGHT; y++) {                     // Recorre les files
-      for (int x = 0; x < MATRIX_WIDTH; x++) {                    // Recorre les columnes
-        leds[XY(x, y)] = countdown[i][y * MATRIX_WIDTH + x];      // Calcula l'índex lineal per accedir al LED correcte del número i l'assigna al LED corresponent de la pantalla
+  for (int i = 0; i < 3; i++) {
+    for (int y = 0; y < MATRIX_HEIGHT; y++) {
+      for (int x = 0; x < MATRIX_WIDTH; x++) {
+        leds[XY(x, y)] = countdown[i][y * MATRIX_WIDTH + x];
       }
     }
-    FastLED.show();                                               // Mostra el numero a la pantalla
-    delay(1000);                                                  // Temps d'espera entra cada segon(pantalla)
+    FastLED.show();
+    delay(1000); // Delay entre pantalles (1s)
   }
 }
 
-void recvWithEndMarker() {                                 // Funció de dades rebudes
-  static int pixelIndex = 0;                               // Definim una variable estàtica
-  static byte rgb[3];                                      // Definim un array de 3 elements
-  static byte colorPos = 0;                                // Variable que guardarà index d'array
-  char rc;                                                 // Variable per llegir dades que arriben per el serial
+void recvWithEndMarker() {
+  static int pixelIndex = 0;         
+  static byte rgb[3];                
+  static byte colorPos = 0;          
+  char rc;
 
-  while (Serial.available() > 0) {                         // Preguntem si hi han dades per llegir, que segueixi llegint
-    rc = Serial.read();                                    // Preparem la variable rc perquè llegeixi les dades que arriben des de el port
-    rgb[colorPos] = (byte)rc;                              // Definim la posició de l'array, i el rc el convertim un byte
-    colorPos++;                                            // Aqui li indiquem al colorPos que vaigui incrementant
+  while (Serial.available() > 0) {
+    rc = Serial.read();
+    rgb[colorPos] = (byte)rc;
+    colorPos++;
 
-    if (colorPos == 3) {                                   // Si colorPos és igual a 3
-      if (pixelIndex < NUM_LEDS) {                         // Quan pixelIndex és menor a 256
-        leds[pixelIndex] = CRGB(rgb[0], rgb[1], rgb[2]);   // li indiquem a l'array de leds el numero de led que té que engegar amb els valors rgb
-        pixelIndex++;                                      // Incrementem la variable per pintar tots els pixels
+    if (colorPos == 3) { 
+      if (pixelIndex < NUM_LEDS) {
+        leds[pixelIndex] = CRGB(rgb[0], rgb[1], rgb[2]);
+        pixelIndex++;
       }
-      colorPos = 0;                                        // Reiniciem colorPos a 0 per tal de que vaigui al següent i torni a fer l'ordre RGB.
+      colorPos = 0;
 
       
-      FastLED.show();                                      // Mostra el Pixel precessat a la pantalla
+      FastLED.show(); 
     }
 
     
-    if (pixelIndex >= NUM_LEDS) {                          // Preguntem si la variabla pixelIndex és igual o més gran que 256
-      pixelIndex = 0;                                      // Reiniciem aquesta variable per utilitzar una altre cop el programa
+    if (pixelIndex >= NUM_LEDS) {
+      pixelIndex = 0;
     }
   }
 }
 
-void buttonPres(){                            // Funció que mira si el polsador verd s'ha premut
-  if(digitalRead(8)==LOW){                    // Mirem si el pin 8 definit com a entrada és igual a 0
-     Serial.write('S');                       // Enviem una 's' per el port serial
-     delay(500);                              // Delay de 500ms
+void buttonPres(){
+  if(digitalRead(8)==LOW){
+     Serial.write('S');
+     delay(500);
   }
 }
 
