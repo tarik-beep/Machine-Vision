@@ -111,9 +111,9 @@ void loop() {
      Serial.write('S');                                    // Envia per la comunicació serial una ('s')
      delay(500);                                           // Delay de mig segon
   }
-  recvNoEndMarker();                                     // Funció que rep les dades per el port serial 
+  recvNoEndMarker();                                       // Funció que rep les dades per el port serial 
   if (newData == true){                                    // Mirem si rebem noves dades
-    FastLED.show();                                        // Les enviem a la pantalla
+    paintRandomPixels();                                   // Efecte aleatori
     newData = false;                                       // Resetejem la variable
   }   
 }
@@ -150,32 +150,51 @@ void countdown() {
   }
 }
 
-void recvNoEndMarker() {                                 // Funció de dades rebudes
-  static int pixelIndex = 0;                               // Definim una variable estàtica
-  static byte rgb[3];                                      // Definim un array de 3 elements
-  static byte colorPos = 0;                                // Variable que guardarà index d'array
-  char rc;                                                 // Variable per llegir dades que arriben per el serial
+CRGB receivedImage[NUM_LEDS]; // Array temporal per guardar la imatge rebuda
 
-  while (Serial.available() > 0) {                         // Preguntem si hi han dades per llegir, que segueixi llegint
-    rc = Serial.read();                                    // guardem a la variable rc les dades que arriben des de el port
-    rgb[colorPos] = (byte)rc;                              // guardem el valor de rc a l'array rgb
-    colorPos++;                                            // Aqui li indiquem al colorPos que vaigui incrementant
+void recvNoEndMarker() {
+  static int pixelIndex = 0;
+  static byte rgb[3];
+  static byte colorPos = 0;
+  char rc;
 
-    if (colorPos == 3) {                                   // Si colorPos és igual a 3
-      if (pixelIndex < NUM_LEDS) {                         // Quan pixelIndex és menor a 256
-        leds[pixelIndex] = CRGB(rgb[0], rgb[1], rgb[2]);   // li indiquem a l'array de leds el numero de led que té que engegar amb els valors rgb
-        pixelIndex++;                                      // Incrementem la variable per pintar tots els pixels
+  while (Serial.available() > 0) {
+    rc = Serial.read();
+    rgb[colorPos] = (byte)rc;
+    colorPos++;
+
+    if (colorPos == 3) {
+      if (pixelIndex < NUM_LEDS) {
+        receivedImage[pixelIndex] = CRGB(rgb[0], rgb[1], rgb[2]); // Guardem a l’array temporal
+        pixelIndex++;
       }
-      colorPos = 0;                                        // Reiniciem colorPos a 0 per tal de que vaigui al següent i torni a fer l'ordre RGB.
-
-      
-      FastLED.show();                                      
+      colorPos = 0;
     }
 
-    
-    if (pixelIndex >= NUM_LEDS) {                          // Preguntem si la variabla pixelIndex és igual o més gran que 256
-      pixelIndex = 0;                                      // Reiniciem aquesta variable per utilitzar una altre cop el programa
+    if (pixelIndex >= NUM_LEDS) {
+      pixelIndex = 0;
+      newData = true; // Marca que tenim una nova imatge completa per pintar
     }
+  }
+}
+
+void paintRandomPixels() {
+  int order[NUM_LEDS];
+  for (int i = 0; i < NUM_LEDS; i++) order[i] = i;
+
+  // Barreja l'ordre aleatòriament (algorisme Fisher-Yates)
+  for (int i = NUM_LEDS - 1; i > 0; i--) {
+    int j = random(i + 1);
+    int temp = order[i];
+    order[i] = order[j];
+    order[j] = temp;
+  }
+
+  // Pinta els LEDs en ordre aleatori
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[order[i]] = receivedImage[order[i]];
+    FastLED.show();
+    delay(20); // Controla la velocitat de l’efecte
   }
 }
 
@@ -185,5 +204,3 @@ void buttonPres(){                            // Funció que mira si el polsador
      delay(500);                              // Delay de 500ms
   }
 }
-
-

@@ -9,37 +9,82 @@
 CRGB leds[NUM_LEDS]; //Crea un array on cada element és un LED RGB que pots controlar.
 
 // Mapeig de la matriu (dependrà de la connexió)
-#define XY(x, y) ((y) * MATRIX_WIDTH + (x))
+#define XY(x, y) ((y) * MATRIX_WIDTH + (x))// Passa de coordenades x,y a posició de l'array
 
 // Definim els colors bàsics
-#define YELLOW  CRGB(255, 200, 0)
-#define BLUE    CRGB(0, 0, 255)
-#define WHITE   CRGB(255, 255, 255)
-#define BLACK   CRGB(0, 0, 0)
+// Colors:
+#define BLACK CRGB(0, 0, 0)
+#define WHITE CRGB(255, 255, 255)
+#define RED CRGB(255, 0, 0)
+#define GREEN CRGB(0, 128, 0)
+#define BLUE CRGB(0, 0, 255)
+#define YELLOW CRGB(255, 255, 0)
+#define ORANGE CRGB(255, 165, 0)
+#define PURPLE CRGB(128, 0, 128)
+#define PINK CRGB(255, 192, 203)
+#define BROWN CRGB(165, 42, 42)
+#define GRAY CRGB(128, 128, 128)
 
-
-
-// Definim el emoji en una matriu de 16x16
-const CRGB emoji1[16][16] = {
-  {WHITE, WHITE, WHITE, WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE, WHITE, WHITE, WHITE},
-  {WHITE, WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE, WHITE},
-  {WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE},
-  {WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE},
-  {WHITE, YELLOW, YELLOW, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, YELLOW, YELLOW, WHITE},
-  {YELLOW, YELLOW, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, YELLOW, YELLOW},
-  {YELLOW, BLACK, YELLOW, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, YELLOW, BLACK, YELLOW},
-  {YELLOW, YELLOW, YELLOW, BLUE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLUE, YELLOW, YELLOW, YELLOW},
-  {YELLOW, YELLOW, BLUE, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLUE, BLUE, YELLOW, YELLOW},
-  {YELLOW, BLUE, BLUE, BLUE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLUE, BLUE, BLUE, YELLOW},
-  {BLUE, BLUE, BLUE, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLUE, BLUE, BLUE, BLUE},
-  {BLUE, BLUE, BLUE, BLUE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLUE, BLUE, BLUE, BLUE},
-  {WHITE, BLUE, BLUE, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, BLUE, BLUE, WHITE},
-  {WHITE, WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE, WHITE},
-  {WHITE, WHITE, WHITE, WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE, WHITE, WHITE, WHITE},
-  {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, YELLOW, YELLOW, YELLOW, YELLOW, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE}
+// Definim el numero1 en una matriu de 16x16
+const CRGB numero1[16][16] = {
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, WHITE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK}
 };
-const CRGB emojiblank[16][16];
-// Arduino server for Color LEGO_Arduino.vbai 
+
+// Definim el numero2 en una matriu de 16x16
+const CRGB numero2[16][16] = {
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK}
+};
+
+// Definim el numero3 en una matriu de 16x16
+const CRGB numero3[16][16] = {
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ YELLOW, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, PURPLE, PURPLE, YELLOW},
+{ YELLOW, PURPLE, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, WHITE, WHITE, WHITE, PURPLE, PURPLE, PURPLE, YELLOW},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK},
+{ BLACK, BLACK, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, YELLOW, YELLOW, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, PURPLE, YELLOW, YELLOW, BLACK, BLACK, BLACK},
+{ BLACK, BLACK, BLACK, BLACK, BLACK, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, YELLOW, BLACK, BLACK, BLACK, BLACK, BLACK}
+};
+ 
 
 const byte numChars = 255;                                 // Aqui li indiquem quantes dades te que rebre
 char receivedChars[numChars];                              // array on guarda totes aquestes dades
@@ -49,17 +94,23 @@ void setup() {
     Serial.begin(9600);
     FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS); // Iniciar comunicació amb la pantalla
     FastLED.setBrightness( BRIGHTNESS );                   // Assignar al brillantor de la pantalla
-    drawEmoji();                                           // Funció que pinta la pantalla en blanc quan resetejem
-    FastLED.show();                                        // Eina de la llibreria que mostra a la pantalla
+    drawEmoji();                                           // Funció que carrega la pantalla en blanc a l'array leds
+    FastLED.show();                                        // Funció que mostra a la pantalla l'array leds
     pinMode(8,INPUT_PULLUP);                               // Definim el pin 8 com a entrada (Polsador)
 }
 
+CRGB savedImage[NUM_LEDS];         // Guarda la imatge rebuda
+
 void loop() {
-  buttonPres();                                            // Mirem si s'ha premut algun polsador
-  recvWithEndMarker();                                     // Comença a llegir dades del port serial
-  if (newData == true){                                    // Mirem si ha llegit totes les dades
-    FastLED.show();                                        // Pinta a la pantalla la imatge completa
-    newData = false;                                       // Resetejem la variable newData per provar alguna altre imatge
+  buttonPres();
+  recvNoEndMarker();
+  
+  if (newData == true) {
+    memcpy(savedImage, leds, sizeof(leds));  // Guardem la imatge rebuda
+    countdown();                             // Mostrem 3, 2, 1
+    memcpy(leds, savedImage, sizeof(leds));  // Recuperem la imatge original
+    FastLED.show();                          
+    newData = false;
   }   
 }
 
@@ -73,7 +124,7 @@ void drawEmoji() {                                         // Funció Per pintar
     }
 }
 
-void recvWithEndMarker() {                                 // Funció de dades rebudes
+void recvNoEndMarker() {                                 // Funció de dades rebudes
   static byte nbit = 0;                                    // Variable estatica que guarda 8 bis
   static byte nbyte = 0;                                   // Variable estatica que guarda 1 byte
   char endMarker = '\n';                                   // Funció que decideix quan parar de llegir 
@@ -105,6 +156,21 @@ void recvWithEndMarker() {                                 // Funció de dades r
     }
   }
 }
+
+void countdown() {                                         
+  const CRGB* countdown[3] = { &numero3[0][0], &numero2[0][0], &numero1[0][0] }; // & = dóna’m la seva adreça de memòria
+
+  for (int i = 0; i < 3; i++) {                                   // Variable i per recórrer els elements dins de l'array
+    for (int y = 0; y < MATRIX_HEIGHT; y++) {                     // Recorre les files
+      for (int x = 0; x < MATRIX_WIDTH; x++) {                    // Recorre les columnes
+        leds[XY(x, y)] = countdown[i][y * MATRIX_WIDTH + x];      // Calcula l'índex lineal per accedir al LED correcte del número i l'assigna al LED corresponent de la pantalla
+      }
+    }
+    FastLED.show();                                               // Mostra el numero a la pantalla
+    delay(1000);                                                  // Temps d'espera entra cada segon(pantalla)
+  }
+}
+
 
 void buttonPres(){                     // Funció que mira si el polsador verd s'ha premut
   if(digitalRead(8)==LOW){             // Mirem si el pin 8 definit com a entrada és igual a 0
